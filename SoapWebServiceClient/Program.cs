@@ -1,5 +1,7 @@
 using SoapWebServiceClient.SoapWebServiceNameSpace;
 using System;
+using System.Net.Http;
+using System.Xml;
 
 namespace SoapWebServiceClient
 {
@@ -55,7 +57,9 @@ namespace SoapWebServiceClient
                         //Console.WriteLine(" = ", calculator.Add(, input[2]));
                         break;
 
-
+                    case "addrest":
+                        Console.WriteLine(RestAdd(input[1], input[2]));
+                        break;
                     default:
                         break;
                 }
@@ -111,6 +115,25 @@ namespace SoapWebServiceClient
             Console.WriteLine(string.Format(opMsg, "Divide", a, b, result));
         }
 
+        private static string RestAdd(string a, string b)
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                //httpClient.DefaultRequestHeaders.Add("Content-type", "text/xml");
+                httpClient.DefaultRequestHeaders.Add("Accept", "application/xml");
+                //httpClient.DefaultRequestHeaders.Add("Allow", "GET");
+
+
+                string response = httpClient.GetStringAsync(string.Format("http://localhost:8080/myapp/number/Add/{0}/{1}", a, b)).Result;
+
+                //var xml = new XmlDocument();
+                //xml.LoadXml(response);
+
+
+                return response;//xml.LastChild.Value;
+            }
+        }
+
     }
 
     public class Result<T>
@@ -141,4 +164,6 @@ namespace SoapWebServiceClient
         InsufficientArugments,
         InvalidArguments,
     }
+
+
 }
